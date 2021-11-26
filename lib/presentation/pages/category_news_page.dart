@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_news/infrastructure/services/api_service.dart';
 import 'package:flutter_news/infrastructure/models/article_model.dart';
 import 'package:flutter_news/presentation/widgets/article_list.dart';
+import 'package:get/route_manager.dart';
 
 class CategoryNewsPage extends StatefulWidget {
   const CategoryNewsPage({Key? key, required this.categoryName})
@@ -61,7 +62,7 @@ class _CategoryNewsPageState extends State<CategoryNewsPage> {
             ),
           ],
         ),
-        onPressed: () => Navigator.pop(context),
+        onPressed: () => Get.back(),
       ),
     );
   }

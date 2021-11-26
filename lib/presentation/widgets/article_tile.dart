@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_news/presentation/pages/article_page.dart';
 import 'package:flutter_news/utilities/theme_globals.dart';
+import 'package:get/route_manager.dart';
 
 class ArticleTile extends StatelessWidget {
   const ArticleTile({
@@ -26,14 +27,9 @@ class ArticleTile extends StatelessWidget {
       child: Column(
         children: [
           GestureDetector(
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => ArticlePage(
-                  url: url,
-                ),
-              ),
+            onTap: () => Get.to(
+              ArticlePage(url: url),
             ),
-            //todo
             child: ClipRRect(
               borderRadius: BorderRadius.circular(
                 5.0,

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_news/presentation/pages/category_news_page.dart';
 import 'package:flutter_news/utilities/theme_globals.dart';
+import 'package:get/route_manager.dart';
 
 class CategoryTile extends StatelessWidget {
   const CategoryTile({
@@ -14,11 +15,9 @@ class CategoryTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => CategoryNewsPage(
-            categoryName: categoryName,
-          ),
+      onTap: () => Get.to(
+        CategoryNewsPage(
+          categoryName: categoryName,
         ),
       ),
       child: Container(

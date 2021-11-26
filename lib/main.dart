@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_news/app.dart';
-import 'package:get_storage/get_storage.dart';
+import 'package:flutter_news/infrastructure/main_configs.dart';
 
-void main() async {
-  //initalize Get Storage
-  await GetStorage.init();
+Future<void> main() async {
+  //initalize Main Configurations
+  await MainConfigs.configure();
+
   runApp(const App());
 }
