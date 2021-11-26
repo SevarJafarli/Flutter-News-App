@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_news/infrastructure/helpers/category_data.dart';
 import 'package:flutter_news/infrastructure/services/api_service.dart';
 import 'package:flutter_news/infrastructure/models/article_model.dart';
-import 'package:flutter_news/infrastructure/models/category_model.dart';
+import 'package:flutter_news/infrastructure/services/theme_service.dart';
 import 'package:flutter_news/presentation/widgets/article_list.dart';
 import 'package:flutter_news/presentation/widgets/category_tile.dart';
 import 'package:flutter_news/utilities/theme_globals.dart';
@@ -11,44 +11,32 @@ class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  List<CategoryModel> categories = [];
-  // List<ArticleModel> articles = [];
-
   ApiService apiService = ApiService();
-
-  @override
-  void initState() {
-    super.initState();
-    categories = getCategories();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(),
+      appBar: _buildAppBar(context),
       body: _buildBody(),
     );
   }
 
-  PreferredSizeWidget _buildAppBar() => AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0.0,
+  PreferredSizeWidget _buildAppBar(BuildContext context) => AppBar(
         centerTitle: true,
         title: RichText(
-          text: const TextSpan(
+          text: TextSpan(
             text: 'Flutter',
             style: TextStyle(
-              color: Colors.black,
+              color: Theme.of(context).appBarTheme.titleTextStyle?.color,
               fontSize: 20.0,
               fontWeight: FontWeight.bold,
             ),
-            children: [
+            children: const [
               TextSpan(
-                text: 'News',
+                text: ' News',
                 style: TextStyle(
                   color: Colors.blue,
                 ),
@@ -56,6 +44,21 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: kDefaultPadding),
+            child: GestureDetector(
+              child: const Icon(
+                Icons.dark_mode,
+                size: 30.0,
+              ),
+              onTap: () {
+                ThemeService().changeThemeMode();
+                print('Changed');
+              },
+            ),
+          ),
+        ],
       );
 
   Widget _buildBody() {
@@ -67,7 +70,15 @@ class _HomePageState extends State<HomePage> {
             future: apiService.fetchNews(),
             builder: (context, AsyncSnapshot<List<ArticleModel>> snapshot) {
               if (snapshot.hasData) {
-                return ArticlesList(articles: snapshot.data!);
+                return Container(
+                  // color: Colors.red,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: kDefaultPadding,
+                  ),
+                  height: MediaQuery.of(context).size.height,
+                  child: ArticlesList(
+                      refreshPage: _refreshPage, articles: snapshot.data!),
+                );
               } else if (snapshot.hasError) {
                 return Text('${snapshot.error}');
               } else {
@@ -82,9 +93,22 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  SizedBox _buildCategories() {
-    return SizedBox(
+  Future<void> _refreshPage() async {
+    setState(() {
+      apiService.fetchNews();
+    });
+    print('home page refreshed');
+  }
+
+  Container _buildCategories() {
+    var categories = getCategories();
+    // var categories =
+    //     Provider.of<CategoryProvider>(context, listen: false).getCategories();
+    return Container(
       height: 55.0,
+      margin: const EdgeInsets.only(
+        top: kDefaultPadding / 2,
+      ),
       child: ListView.builder(
         shrinkWrap: true,
         padding: const EdgeInsets.symmetric(
@@ -93,7 +117,9 @@ class _HomePageState extends State<HomePage> {
         scrollDirection: Axis.horizontal,
         itemCount: categories.length,
         itemBuilder: (BuildContext context, int index) {
-          return CategoryTile(categoryName: categories[index].categoryName);
+          return CategoryTile(
+            categoryName: categories[index].categoryName,
+          );
         },
       ),
     );

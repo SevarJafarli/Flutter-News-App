@@ -34,18 +34,44 @@ class ArticleTile extends StatelessWidget {
               ),
             ),
             //todo
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: 200.0,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(
+                5.0,
+              ),
               child: CachedNetworkImage(
                 imageUrl: imageUrl,
                 fit: BoxFit.cover,
+                height: 200.0,
+                width: MediaQuery.of(context).size.width,
                 progressIndicatorBuilder: (context, url, downloadProgress) =>
-                    CircularProgressIndicator(value: downloadProgress.progress),
-                errorWidget: (context, url, error) => const Icon(
-                  Icons.error,
-                  color: Colors.red,
+                    CircularProgressIndicator(
+                  value: downloadProgress.progress,
+                  strokeWidth: 2.0,
                 ),
+                errorWidget: (context, url, error) => Container(
+                    color: Colors.grey,
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.image_not_supported,
+                            color: Theme.of(context).iconTheme.color,
+                            size: 60.0,
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.only(top: kDefaultPadding / 2),
+                            child: Text(
+                              'No image available',
+                              style: TextStyle(
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )),
               ),
             ),
           ),

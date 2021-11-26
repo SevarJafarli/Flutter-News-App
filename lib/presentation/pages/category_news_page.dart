@@ -13,8 +13,6 @@ class CategoryNewsPage extends StatefulWidget {
 }
 
 class _CategoryNewsPageState extends State<CategoryNewsPage> {
-  List<ArticleModel> articles = [];
-
   ApiService apiService = ApiService();
 
   @override
@@ -27,7 +25,8 @@ class _CategoryNewsPageState extends State<CategoryNewsPage> {
         ),
         builder: (context, AsyncSnapshot<List<ArticleModel>> snapshot) {
           if (snapshot.hasData) {
-            return ArticlesList(articles: snapshot.data!);
+            return ArticlesList(
+                refreshPage: _refreshPage, articles: snapshot.data!);
           } else if (snapshot.hasError) {
             return Text('${snapshot.error}');
           } else {
@@ -40,46 +39,22 @@ class _CategoryNewsPageState extends State<CategoryNewsPage> {
     );
   }
 
-  // Widget _buildNews() {
-  //   return SizedBox(
-  //     height: MediaQuery.of(context).size.height,
-  //     //  width: MediaQuery.of(context).size.width,
-  //     child: ListView.builder(
-  //       padding: const EdgeInsets.symmetric(
-  //         horizontal: kDefaultPadding,
-  //       ),
-  //       itemBuilder: (context, index) {
-  //         var article = articles[index];
-  //         return ArticleTile(
-  //           imageUrl: article.urlToImage!,
-  //           title: article.title!,
-  //           description: article.description!,
-  //           url: article.url!,
-  //         );
-  //       },
-  //       itemCount: articles.length,
-  //     ),
-  //   );
-  // }
-
   AppBar _buildAppBar(BuildContext context) {
     return AppBar(
-      backgroundColor: Colors.white,
-      elevation: 0.0,
       leadingWidth: 110.0,
       leading: CupertinoButton(
         // padding: EdgeInsets.zero,
         child: Row(
           mainAxisSize: MainAxisSize.min,
-          children: const [
+          children: [
             Icon(
               Icons.arrow_back_ios,
-              color: Colors.black,
+              color: Theme.of(context).iconTheme.color,
             ),
             Text(
               'Back',
               style: TextStyle(
-                color: Colors.black,
+                color: Theme.of(context).iconTheme.color,
                 fontSize: 20.0,
                 fontWeight: FontWeight.bold,
               ),
@@ -89,5 +64,12 @@ class _CategoryNewsPageState extends State<CategoryNewsPage> {
         onPressed: () => Navigator.pop(context),
       ),
     );
+  }
+
+  Future<void> _refreshPage() async {
+    setState(() {
+      apiService.fetchNewsByCategory(widget.categoryName);
+    });
+    print('category news page refreshed');
   }
 }

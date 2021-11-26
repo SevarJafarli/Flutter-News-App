@@ -7,17 +7,17 @@ class ArticlesList extends StatelessWidget {
   const ArticlesList({
     Key? key,
     required this.articles,
+    required this.refreshPage,
   }) : super(key: key);
 
+  final Future<void> Function() refreshPage;
   final List<ArticleModel> articles;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        vertical: kDefaultPadding,
-      ),
-      height: MediaQuery.of(context).size.height,
+    return RefreshIndicator(
+      onRefresh: refreshPage,
+      color: Colors.blue,
       child: ListView.builder(
         padding: const EdgeInsets.symmetric(
           horizontal: kDefaultPadding,

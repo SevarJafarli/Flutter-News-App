@@ -1,38 +1,3 @@
-// import 'dart:convert';
-
-// import 'package:flutter_news/infrastructure/models/article_model.dart';
-// import 'package:http/http.dart' as http;
-
-// const _apiKey = 'd41f721e38fb469c97f57333a6023958';
-
-// class CategoryNews {
-//   List<ArticleModel> articles = [];
-
-//   Future<void> getNewsByCategory(category) async {
-//     var response = await http.get(
-//       Uri.parse(
-//           'https://newsapi.org/v2/top-headlines?category=$category&apiKey=$_apiKey'),
-//     );
-
-//     var jsonData = jsonDecode(response.body);
-//     if (jsonData['status'] == 'ok') {
-//       print('truee');
-//       jsonData['articles'].forEach(
-//         (element) {
-//           ArticleModel articleModel = ArticleModel(
-//             element['author'],
-//             element['title'],
-//             element['description'],
-//             element['url'],
-//             element['urlToImage'],
-//             element['content'],
-//           );
-//           articles.add(articleModel);
-//         },
-//       );
-//     }
-//   }
-// }
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_news/infrastructure/models/article_model.dart';

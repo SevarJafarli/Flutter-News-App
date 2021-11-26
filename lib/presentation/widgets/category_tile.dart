@@ -28,7 +28,7 @@ class CategoryTile extends StatelessWidget {
         ),
         width: 150.0,
         decoration: BoxDecoration(
-          color: Colors.black,
+          color: Colors.blue,
           borderRadius: BorderRadius.circular(
             10.0,
           ),
@@ -36,10 +36,10 @@ class CategoryTile extends StatelessWidget {
         child: Center(
           child: Text(
             categoryName,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16.0,
               fontWeight: FontWeight.bold,
-              color: Colors.white,
+              color: Theme.of(context).appBarTheme.titleTextStyle?.color,
             ),
           ),
         ),
