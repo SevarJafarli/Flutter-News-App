@@ -1,21 +1,28 @@
+import 'dart:io';
+
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class ConnectivityProvider extends ChangeNotifier {
-  Connectivity _connectivity = Connectivity();
+class ConnectivityProvider with ChangeNotifier {
+  final Connectivity _connectivity = Connectivity();
 
-  late bool _isConnected;
-  bool get isConnected => _isConnected;
+  late bool _isOnline;
+  bool get isOnline => _isOnline;
 
   startMonitoring() async {
     await initConnectivity();
-    _connectivity.onConnectivityChanged.listen((event) async {
-      if (event == ConnectivityResult.none) {
-        _isConnected = false;
+    _connectivity.onConnectivityChanged.listen((
+      ConnectivityResult result,
+    ) async {
+      if (result == ConnectivityResult.none) {
+        _isOnline = false;
         notifyListeners();
       } else {
-        _isConnected = true;
+        await _updateConnectionStatus().then((bool isConnected) {
+          _isOnline = isConnected;
+          notifyListeners();
+        });
       }
     });
   }
@@ -23,15 +30,31 @@ class ConnectivityProvider extends ChangeNotifier {
   Future<void> initConnectivity() async {
     try {
       var status = await _connectivity.checkConnectivity();
+
       if (status == ConnectivityResult.none) {
-        _isConnected = false;
+        _isOnline = false;
         notifyListeners();
       } else {
-        _isConnected = true;
+        _isOnline = true;
         notifyListeners();
       }
     } on PlatformException catch (e) {
-      print('Platform Exception ${e.toString()}');
+      print("PlatformException: " + e.toString());
     }
+  }
+
+  Future<bool> _updateConnectionStatus() async {
+    late bool isConnected;
+    try {
+      final List<InternetAddress> result =
+          await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        isConnected = true;
+      }
+    } on SocketException catch (_) {
+      isConnected = false;
+      //return false;
+    }
+    return isConnected;
   }
 }

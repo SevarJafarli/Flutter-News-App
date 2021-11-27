@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 const double kDefaultPadding = 20.0;
 const whiteColor = Colors.white;
 const blackColor = Colors.black;
+const blueColor = Colors.blue;
 
 class Themes {
   static final lightTheme = ThemeData.light().copyWith(

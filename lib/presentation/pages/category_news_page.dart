@@ -68,6 +68,9 @@ class _CategoryNewsPageState extends State<CategoryNewsPage> {
   }
 
   Future<void> _refreshPage() async {
+    await Future.delayed(
+      const Duration(milliseconds: 500),
+    );
     setState(() {
       apiService.fetchNewsByCategory(widget.categoryName);
     });

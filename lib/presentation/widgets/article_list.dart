@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_news/infrastructure/models/article_model.dart';
 import 'package:flutter_news/presentation/widgets/article_tile.dart';
+import 'package:flutter_news/presentation/widgets/refresh_widget.dart';
 import 'package:flutter_news/utilities/theme_globals.dart';
 
 class ArticlesList extends StatelessWidget {
@@ -15,14 +16,14 @@ class ArticlesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
+    return RefreshWidget(
       onRefresh: refreshPage,
-      color: Colors.blue,
       child: ListView.builder(
         padding: const EdgeInsets.symmetric(
           horizontal: kDefaultPadding,
         ),
         shrinkWrap: true,
+        primary: false,
         itemBuilder: (context, index) {
           ArticleModel? article = articles[index];
           return ArticleTile(

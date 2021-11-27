@@ -1,11 +1,15 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_news/infrastructure/helpers/category_data.dart';
+import 'package:flutter_news/infrastructure/providers/connectivity_provider.dart';
 import 'package:flutter_news/infrastructure/services/api_service.dart';
 import 'package:flutter_news/infrastructure/models/article_model.dart';
 import 'package:flutter_news/infrastructure/services/theme_service.dart';
 import 'package:flutter_news/presentation/widgets/article_list.dart';
 import 'package:flutter_news/presentation/widgets/category_tile.dart';
+import 'package:flutter_news/presentation/widgets/no_internet_connection.dart';
 import 'package:flutter_news/utilities/theme_globals.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -17,11 +21,19 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   ApiService apiService = ApiService();
   @override
+  void initState() {
+    super.initState();
+    Provider.of<ConnectivityProvider>(context, listen: false).startMonitoring();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(context),
-      body: _buildBody(),
-    );
+        appBar: _buildAppBar(context),
+        body: Consumer<ConnectivityProvider>(
+            builder: (consumerContext, model, child) {
+          return model.isOnline ? _buildBody() : const NoInternetConnection();
+        }));
   }
 
   PreferredSizeWidget _buildAppBar(BuildContext context) => AppBar(
@@ -80,7 +92,7 @@ class _HomePageState extends State<HomePage> {
                       refreshPage: _refreshPage, articles: snapshot.data!),
                 );
               } else if (snapshot.hasError) {
-                return Text('${snapshot.error}');
+                return Center(child: const NoInternetConnection());
               } else {
                 return const Center(
                   child: CircularProgressIndicator(),
@@ -94,6 +106,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _refreshPage() async {
+    await Future.delayed(
+      const Duration(milliseconds: 500),
+    );
     setState(() {
       apiService.fetchNews();
     });
@@ -102,8 +117,6 @@ class _HomePageState extends State<HomePage> {
 
   Container _buildCategories() {
     var categories = getCategories();
-    // var categories =
-    //     Provider.of<CategoryProvider>(context, listen: false).getCategories();
     return Container(
       height: 55.0,
       margin: const EdgeInsets.only(
