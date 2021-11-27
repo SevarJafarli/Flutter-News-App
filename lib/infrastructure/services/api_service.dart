@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_news/infrastructure/models/article_model.dart';
 
-const _apiKey = 'd41f721e38fb469c97f57333a6023958';
+const _apiKey = 'YOUR API KEY';
 
 class ApiService {
   String url_1 =
